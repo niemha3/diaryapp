@@ -7,7 +7,7 @@ namespace DiaryApp
         static void Main(string[] args)
         {
 
-            // Tämä on master branch
+            
 
 
             List<Topic> topics = new List<Topic>();
