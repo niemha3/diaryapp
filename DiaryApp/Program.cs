@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 namespace DiaryApp
 {
     class Program
@@ -11,57 +12,162 @@ namespace DiaryApp
 
 
             List<Topic> topics = new List<Topic>();
+            List<string> taskNotes = new List<string>();
+            string path = @"C:\Users\Harri\source\repos\DiaryApp\topics.txt";
+            int id = 0;
+            int taskId = 0;
+         
 
-
-            Console.WriteLine("Input topic id: ");
-            int id = Topic.ReadInputInt();
-
-
-            Console.Write("Input title: ");
-            string title = Topic.ReadInputString();
-
-
-            Console.Write("Input description: ");
-            string description = Topic.ReadInputString();
-
-
-            Console.Write("Input estimated time in hours to master the topic: ");
-            double estimatedTimeToMaster = Topic.ReadDoubleInput();
-
-            Console.Write("Input time that you actually spent for the topic: ");
-            double timeSpent = Topic.ReadDoubleInput();
-
-            Console.Write("What was your source website or book name: ");
-            string source = Topic.ReadInputString();
-
-            Console.Write("Input your starting date (e.g 11/06/1993): ");
-            DateTime startLearningDate = Topic.ReadDateTime();
-
-            Console.Write("Is it still in progress?");
-            bool inProgress = true;
-            string result = Topic.ReadInputString();
-            if (result == "no")
+            while (true)
             {
-                inProgress = false;
+                
+                Console.WriteLine("1. Add new topic ");
+                Console.WriteLine("2. Show all topics");
+                Console.WriteLine("3. Add new tasks ");
+                Console.WriteLine("4. to quit");
+                Console.Write("Input number to choose what to do:");
+                int input = int.Parse(Console.ReadLine());
+
+
+                switch (input)
+                {
+                    case 1:
+
+                       
+                        id++;
+
+                        Console.Write("Input title: ");
+                        string title = Topic.ReadInputString();
+
+
+                        Console.Write("Input description: ");
+                        string description = Topic.ReadInputString();
+
+
+                        Console.Write("Input estimated time in hours to master the topic: ");
+                        double estimatedTimeToMaster = Topic.ReadDoubleInput();
+
+                        Console.Write("Input time that you actually spent for the topic: ");
+                        double timeSpent = Topic.ReadDoubleInput();
+
+                        Console.Write("What was your source website or book name: ");
+                        string source = Topic.ReadInputString();
+
+                        Console.Write("Input your starting date (e.g 11/06/1993): ");
+                        DateTime startLearningDate = Topic.ReadDateTime();
+
+                        Console.Write("Is it still in progress?");
+                        bool inProgress = true;
+                        string result = Topic.ReadInputString();
+                        if (result == "no")
+                        {
+                            inProgress = false;
+
+                        }
+
+                        else
+                        {
+                            inProgress = true;
+                        }
+
+                        Console.Write("Please input topics completition date (e.g 11/06/1993): ");
+                        DateTime completitionDate = Topic.ReadDateTime();
+
+                        Topic topic = new Topic(id, title, description, estimatedTimeToMaster, timeSpent, source, startLearningDate, inProgress, completitionDate);
+
+                        using (StreamWriter sw = File.AppendText(path))
+                        {
+                            sw.WriteLine(topic.ToString());
+                            sw.WriteLine();
+                        }
+
+
+
+                        topics.Add(topic);
+                        Console.WriteLine();
+                        
+                        break;
+
+
+                    case 2:
+
+                        Console.Clear();
+                       
+                        using (StreamReader sr = File.OpenText(path))
+                        {
+                            string s = "";
+                            while((s = sr.ReadLine()) != null)
+                            {
+                                Console.WriteLine(s);
+                               
+                            }
+                        }
+                        
+                        break;
+
+                    case 3:
+
+                        taskId++;
+
+                        Console.WriteLine("input task title: ");
+                        string taskTitle = Topic.ReadInputString();
+
+                        Console.Write("Input task description: ");
+                        string taskDescription = Topic.ReadInputString();
+
+                        Console.WriteLine("input notes: ");
+                        string note = Topic.ReadInputString();
+                        taskNotes.Add(note);
+
+                        Console.WriteLine("When is the task due(e.g 01/01/2000): ");
+                        DateTime taskDeadline = Topic.ReadDateTime();
+
+                        //Console.WriteLine("What is the priority 1-5 (5 very urgent): ");
+                        //Enum taskPriority ?
+
+                        Console.WriteLine("Is the task done? (yes/no): ");
+                        string answer = Console.ReadLine();
+                        bool taskDone = true;
+                        if (answer == "no")
+                        {
+                            taskDone = false;
+                        }
+
+                        else
+                        {
+                            taskDone = true;
+                        }
+                     
+                        
+
+
+
+                        break;
+                    default:
+                        break;
+                }
+
+
+
 
             }
 
-            else
-            {
-                inProgress = true;
-            }
-
-            Console.Write("Please input topics completition date (e.g 11/06/1993): ");
-            DateTime completitionDate = Topic.ReadDateTime();
-
-            Topic topic = new Topic(id, title, description, estimatedTimeToMaster, timeSpent, source, startLearningDate, inProgress, completitionDate);
 
 
 
-            topics.Add(topic);
 
 
-            Console.WriteLine(topic.ToString());
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -132,6 +238,28 @@ namespace DiaryApp
         }
     }
 
+
+    public class Task
+    {
+        public int TaskId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public List<string> Notes { get; set; }
+        public DateTime Deadline { get; set; }
+        public Enum Priority { get; set; }
+        public bool Done { get; set; }
+
+        public Task (int taskId, string taskTitle, string taskDescription, List<string> taskNotes, DateTime taskDeadline, Enum taskPriority, bool taskDone)
+        {
+            TaskId = taskId;
+            Title = taskTitle;
+            Description = taskDescription;
+            Notes = taskNotes;
+            Deadline = taskDeadline;
+            Priority = taskPriority;
+            Done = taskDone;
+        }
+    }
 
 
 }
