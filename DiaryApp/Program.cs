@@ -7,71 +7,49 @@ namespace DiaryApp
     {
         static void Main(string[] args)
         {
-
-            
-
-
             List<Topic> topics = new List<Topic>();
             List<string> taskNotes = new List<string>();
             string path = @"C:\Users\Harri\source\repos\DiaryApp\topics.txt";
             int id = 0;
             int taskId = 0;
-         
 
             while (true)
             {
-                
-                Console.WriteLine("1. Add new topic ");
-                Console.WriteLine("2. Show all topics");
-                Console.WriteLine("3. Add new tasks ");
-                Console.WriteLine("4. to quit");
-                Console.Write("Input number to choose what to do:");
-                int input = int.Parse(Console.ReadLine());
-
-
-                switch (input)
+               int userInput = showMenu();
+            
+                switch (userInput)
                 {
                     case 1:
-
                        
                         id++;
-
                         Console.Write("Input title: ");
                         string title = Topic.ReadInputString();
-
 
                         Console.Write("Input description: ");
                         string description = Topic.ReadInputString();
 
-
-                        Console.Write("Input estimated time in hours to master the topic: ");
+                        Console.Write("Estimated time in days to learn the topic: ");
                         double estimatedTimeToMaster = Topic.ReadDoubleInput();
-
-                        Console.Write("Input time that you actually spent for the topic: ");
-                        double timeSpent = Topic.ReadDoubleInput();
 
                         Console.Write("What was your source website or book name: ");
                         string source = Topic.ReadInputString();
 
-                        Console.Write("Input your starting date (e.g 11/06/1993): ");
+                        Console.Write("Input your starting date (eg 11/06/1993): ");
                         DateTime startLearningDate = Topic.ReadDateTime();
 
-                        Console.Write("Is it still in progress?");
-                        bool inProgress = true;
-                        string result = Topic.ReadInputString();
-                        if (result == "no")
+                        Console.Write("Please input topics completition date (e.g 11/06/1993): ");
+                        DateTime completitionDate = Topic.ReadDateTime();
+                        bool inProgress;
+                        if (completitionDate < DateTime.Today) 
                         {
                             inProgress = false;
-
                         }
-
                         else
                         {
                             inProgress = true;
                         }
 
-                        Console.Write("Please input topics completition date (e.g 11/06/1993): ");
-                        DateTime completitionDate = Topic.ReadDateTime();
+                        double timeSpent = (completitionDate - startLearningDate).Days;
 
                         Topic topic = new Topic(id, title, description, estimatedTimeToMaster, timeSpent, source, startLearningDate, inProgress, completitionDate);
 
@@ -81,11 +59,8 @@ namespace DiaryApp
                             sw.WriteLine();
                         }
 
-
-
                         topics.Add(topic);
                         Console.WriteLine();
-                        
                         break;
 
 
@@ -127,7 +102,7 @@ namespace DiaryApp
 
                         Console.WriteLine("Is the task done? (yes/no): ");
                         string answer = Console.ReadLine();
-                        bool taskDone = true;
+                        bool taskDone;
                         if (answer == "no")
                         {
                             taskDone = false;
@@ -138,37 +113,28 @@ namespace DiaryApp
                             taskDone = true;
                         }
                      
-                        
-
-
-
                         break;
                     default:
                         break;
                 }
-
-
-
+                        
 
             }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
+
+        static int showMenu()
+        {
+            Console.WriteLine("1. Add new topic ");
+            Console.WriteLine("2. Show all topics");
+            Console.WriteLine("3. Add new tasks ");
+            Console.WriteLine("4. to quit");
+            Console.Write("Input number to choose what to do:");
+            int input = int.Parse(Console.ReadLine());
+            return input;
+        }
+
+
     }
 
     public class Topic
@@ -230,7 +196,7 @@ namespace DiaryApp
                 "\nTopic title: " + Title.ToString() +
                 "\n topic description: " + Description.ToString() +
                 "\n Estimated time to master: " + EstimatedTimeToMaster.ToString() + " hours" +
-                "\n Time spent: " + TimeSpent.ToString() + " hours" +
+                "\n Time spent: " + TimeSpent.ToString() + " days" +
                 "\n Source: " + Source.ToString() +
                 "\n Start learning date:  " + StartLearningDate.ToString("dd/MM/yyyy") +
                 "\n still in progress: " + InProgress.ToString() +
@@ -263,3 +229,33 @@ namespace DiaryApp
 
 
 }
+
+
+
+
+
+
+
+
+
+
+         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
