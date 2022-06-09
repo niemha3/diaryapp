@@ -12,10 +12,11 @@ namespace DiaryApp
             string path = @"C:\Users\Harri\source\repos\DiaryApp\topics.txt";
             int id = 0;
             int taskId = 0;
+            bool menu = true;
 
-            while (true)
+            while (menu)
             {
-               int userInput = showMenu();
+               int userInput = ShowMenu();
             
                 switch (userInput)
                 {
@@ -53,6 +54,8 @@ namespace DiaryApp
 
                         Topic topic = new Topic(id, title, description, estimatedTimeToMaster, timeSpent, source, startLearningDate, inProgress, completitionDate);
 
+
+                       
                         using (StreamWriter sw = File.AppendText(path))
                         {
                             sw.WriteLine(topic.ToString());
@@ -114,16 +117,20 @@ namespace DiaryApp
                         }
                      
                         break;
+
+                    case 4:
+                        menu = false;
+                        break;
                     default:
                         break;
                 }
-                        
-
+                Console.Clear();
+               
             }
 
         }
 
-        static int showMenu()
+        static int ShowMenu()
         {
             Console.WriteLine("1. Add new topic ");
             Console.WriteLine("2. Show all topics");
@@ -134,6 +141,7 @@ namespace DiaryApp
             return input;
         }
 
+    
 
     }
 
@@ -148,10 +156,12 @@ namespace DiaryApp
         public DateTime StartLearningDate { get; set; }
         public bool InProgress { get; set; }
         public DateTime CompletitionDate { get; set; }
+       
 
         public Topic(int id, string title, string description, double estimatedTimeToMaster, double timeSpent,
            string source, DateTime startLearningDate, bool inProgress, DateTime completitionDate)
         {
+
             Id = id;
             Title = title;
             Description = description;
