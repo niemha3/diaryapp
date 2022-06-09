@@ -21,12 +21,13 @@ namespace DiaryApp
                 switch (userInput)
                 {
                     case 1:
-                       
+
+                        Console.Clear();
                         id++;
-                        Console.Write("Input title: ");
+                        Console.Write("Input topic's title: ");
                         string title = Topic.ReadInputString();
 
-                        Console.Write("Input description: ");
+                        Console.Write("Input description for topic: ");
                         string description = Topic.ReadInputString();
 
                         Console.Write("Estimated time in days to learn the topic: ");
@@ -35,7 +36,7 @@ namespace DiaryApp
                         Console.Write("What was your source website or book name: ");
                         string source = Topic.ReadInputString();
 
-                        Console.Write("Input your starting date (eg 11/06/1993): ");
+                        Console.Write("Input your starting date (e.g 11/06/1993): ");
                         DateTime startLearningDate = Topic.ReadDateTime();
 
                         Console.Write("Please input topics completition date (e.g 11/06/1993): ");
@@ -86,7 +87,7 @@ namespace DiaryApp
                     case 3:
 
                         taskId++;
-
+                        Console.Clear();
                         Console.WriteLine("input task title: ");
                         string taskTitle = Topic.ReadInputString();
 
@@ -110,12 +111,11 @@ namespace DiaryApp
                         {
                             taskDone = false;
                         }
-
                         else
                         {
                             taskDone = true;
                         }
-                     
+                        Task task = new Task(taskId, taskTitle, taskDescription, taskNotes, taskDeadline, taskDone);
                         break;
 
                     case 4:
@@ -225,14 +225,14 @@ namespace DiaryApp
         public Enum Priority { get; set; }
         public bool Done { get; set; }
 
-        public Task (int taskId, string taskTitle, string taskDescription, List<string> taskNotes, DateTime taskDeadline, Enum taskPriority, bool taskDone)
+        public Task (int taskId, string taskTitle, string taskDescription, List<string> taskNotes, DateTime taskDeadline, bool taskDone)
         {
             TaskId = taskId;
             Title = taskTitle;
             Description = taskDescription;
             Notes = taskNotes;
             Deadline = taskDeadline;
-            Priority = taskPriority;
+            //Priority = taskPriority;
             Done = taskDone;
         }
     }
