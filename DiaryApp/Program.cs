@@ -15,11 +15,11 @@ namespace DiaryApp
             string json = File.ReadAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsontopics.json");
 
             List<Topic> topicLista = new List<Topic>();
+
+            //Sovelluksen käynnistyessä lukee tekstitiedoston topicit listaan
             topicLista = JsonSerializer.Deserialize<List<Topic>>(json);
 
-       
-
-            // luuppaa jokaisen list itemin id ja itse topic ja lisää listaan
+            // luuppaa jokaisen list itemin, ja lisää id:n dictionaryn keyksi ja topicin valueksi
             foreach (var item in topicLista)
             {
                 int id = item.Id;
@@ -50,7 +50,7 @@ namespace DiaryApp
                         break;
 
                     case 4:
-                        updateTopic(topicKokoelma);
+                        UpdateTopic(topicKokoelma);
 
                         break;
 
@@ -202,16 +202,18 @@ namespace DiaryApp
             else
             {
                 Console.WriteLine("No matches");
+                ShowMenu();
+
             }
         }
 
-        static void updateTopic(Dictionary <int, Topic> topicKokoelma)
+        static void UpdateTopic(Dictionary <int, Topic> topicKokoelma)
         {
             ShowTopics(topicKokoelma);
-            Console.WriteLine("---------------");
+            
             Console.WriteLine("Please input id for the topic you would like to edit: ");
             int id = int.Parse(Console.ReadLine());
-            while (topicKokoelma.ContainsKey(id) == true)
+            if (topicKokoelma.ContainsKey(id) == true)
             {
                 
                 Console.WriteLine("1) Edit Id");
@@ -233,42 +235,49 @@ namespace DiaryApp
                         Console.Write("Enter new Id: ");
                         int newId = Topic.ReadInputInt();
                         haettu.Id = newId;
+                        WriteToJson(topicKokoelma);
                         break;
 
                     case 2:
                         Console.Write("Enter new title: ");
                         string newTitle = Console.ReadLine();
                         haettu.Title = newTitle;
+                        WriteToJson(topicKokoelma);
                         break;
 
                     case 3:
                         Console.Write("Enter new description: ");
                         string newDescription = Console.ReadLine();
                         haettu.Description = newDescription;
+                        WriteToJson(topicKokoelma);
                         break;
 
                     case 4:
                         Console.Write("New estimated time to master: ");
                         int newEstimatedTime = Topic.ReadInputInt();
                         haettu.EstimatedTimeToMaster = newEstimatedTime;
+                        WriteToJson(topicKokoelma);
                         break;
 
                     case 5:
                         Console.Write("Enter new source: ");
                         string newSource = Console.ReadLine();
                         haettu.Source = newSource;
+                        WriteToJson(topicKokoelma);
                         break;
 
                     case 6:
                         Console.WriteLine("Enter new start date for learning(e.g 01/01/2000):");
                         DateTime newStartDate = Topic.ReadDateTime();
                         haettu.StartLearningDate = newStartDate;
+                        WriteToJson(topicKokoelma);
                         break;
 
                     case 7:
                         Console.WriteLine("Enter new finish date(01/01/2000): ");
                         DateTime newCompletitionDate = Topic.ReadDateTime();
                         haettu.CompletitionDate = newCompletitionDate;
+                        WriteToJson(topicKokoelma);
                         break;
                     case 8:
 
@@ -279,6 +288,11 @@ namespace DiaryApp
                         break;
                 }
 
+            }
+            else
+            {
+                Console.WriteLine("Id was not found, back to main menu.");
+                ShowMenu();
             }
             
         }
