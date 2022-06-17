@@ -11,24 +11,14 @@ namespace DiaryApp
         static void Main(string[] args)
         {
             Dictionary<int, Topic> topicKokoelma = new Dictionary<int, Topic>();
-       
-            string json = File.ReadAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsontopics.json");
-
             List<Topic> topicLista = new List<Topic>();
+            ReadTopicsFromJson(topicKokoelma, topicLista);
 
-            //Sovelluksen käynnistyessä lukee tekstitiedoston topicit listaan
-            topicLista = JsonSerializer.Deserialize<List<Topic>>(json);
+            Dictionary<int, Task> taskKokoelma = new Dictionary<int, Task>();
+            List<Task> taskLista = new List<Task>();
+            ReadTasksFromJson(taskKokoelma, taskLista);
 
-            // luuppaa jokaisen list itemin, ja lisää id:n dictionaryn keyksi ja topicin valueksi
-            foreach (var item in topicLista)
-            {
-                int id = item.Id;
-                topicKokoelma.Add(id, item);
-            }
-
-            int taskId = 0;
             bool menu = true;
-
             while (menu)
             {
                int userInput = ShowMenu();
@@ -41,17 +31,14 @@ namespace DiaryApp
 
                     case 2:
                         ShowTopics(topicKokoelma);
-                       
                         break;
 
                     case 3:
                         searchTopics(topicKokoelma);
-
                         break;
 
                     case 4:
                         UpdateTopic(topicKokoelma);
-
                         break;
 
                     case 5:
@@ -61,11 +48,12 @@ namespace DiaryApp
                     case 6:
                         //AddNewTask ei vielä konkreettisesti lisää taskia niinkuin pitäisi
                         // On vielä vaiheessa
-                        taskId++;
-                        AddNewTask(taskId);
+                        AddNewTask(topicKokoelma,taskKokoelma);
                         break;
-
                     case 7:
+                        ShowTasks(taskKokoelma);
+                        break;
+                    case 8:
                         menu = false;
                         break;
                     default:
@@ -83,7 +71,9 @@ namespace DiaryApp
             Console.WriteLine("4. Edit topics");
             Console.WriteLine("5. Delete topic");
             Console.WriteLine("6. Add new tasks ");
-            Console.WriteLine("7. to quit");
+            Console.WriteLine("7. Show tasks");
+            Console.WriteLine("8. To quit");
+
             Console.Write("Input number to choose what to do:");
             int input = int.Parse(Console.ReadLine());
             Console.WriteLine("----------------");
@@ -137,16 +127,41 @@ namespace DiaryApp
             topicKokoelma.Add(id, topic);
 
             //Kirjoitus Json-tiedostoon
-            WriteToJson(topicKokoelma);
+            WriteTopicsToJson(topicKokoelma);
         }
 
-        static void WriteToJson(Dictionary<int, Topic> topicKokoelma)
+        static void ReadTopicsFromJson(Dictionary<int, Topic> topicKokoelma, List<Topic> topicLista)
+        {
+            string jsonTopics = File.ReadAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsontopics.json");
+            topicLista = JsonSerializer.Deserialize<List<Topic>>(jsonTopics);
+            foreach (var item in topicLista)
+            {
+                int id = item.Id;
+                topicKokoelma.Add(id, item);
+            }
+        }
+        static void WriteTopicsToJson(Dictionary<int, Topic> topicKokoelma)
         {
             
             string jsonFile = JsonSerializer.Serialize(topicKokoelma.Values);
             File.WriteAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsontopics.json", jsonFile);
         }
-
+        static void WriteTasksToJson (Dictionary <int, Task> taskKokoelma)
+        {
+            string jsonTasks = JsonSerializer.Serialize(taskKokoelma.Values);
+            File.WriteAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsonTasks.json", jsonTasks);
+           
+        }
+        static void ReadTasksFromJson (Dictionary <int, Task> taskKokoelma, List<Task> taskLista)
+        {
+            string jsonTasks = File.ReadAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsonTasks.json");
+            taskLista = JsonSerializer.Deserialize<List<Task>> (jsonTasks);
+            foreach (var task in taskLista)
+            {
+                int taskId = task.TaskId;
+                taskKokoelma.Add(taskId, task);
+            }
+        }
         static void ShowTopics(Dictionary<int, Topic> topicKokoelma)
         {
             foreach (var item in topicKokoelma.Values)
@@ -156,10 +171,14 @@ namespace DiaryApp
             }
 
         }
-        static void AddNewTask(int taskId)
+        static void AddNewTask( Dictionary <int, Topic> topicKokoelma, Dictionary <int, Task> taskKokoelma)
         {
+            ShowTopics(topicKokoelma);
             List<string> taskNotes = new List<string>();
-            Console.Clear();
+
+            Console.WriteLine("Enter topics Id where you want to add the task");
+            int taskId = int.Parse(Console.ReadLine());
+
             Console.WriteLine("input task title: ");
             string taskTitle = Topic.ReadInputString();
 
@@ -188,6 +207,18 @@ namespace DiaryApp
             }
             Task task = new Task(taskId, taskTitle, taskDescription, taskNotes, taskDeadline, taskDone);
             
+            taskKokoelma.Add(taskId, task);
+
+            WriteTasksToJson(taskKokoelma);
+
+            
+        }
+        static void ShowTasks (Dictionary <int, Task> taskKokoelma)
+        {
+            foreach (var task in taskKokoelma.Values)
+            {
+                Console.WriteLine(task);
+            }
         }
 
         static void searchTopics(Dictionary<int, Topic> topicKokoelma)
@@ -235,49 +266,49 @@ namespace DiaryApp
                         Console.Write("Enter new Id: ");
                         int newId = Topic.ReadInputInt();
                         haettu.Id = newId;
-                        WriteToJson(topicKokoelma);
+                        WriteTopicsToJson(topicKokoelma);
                         break;
 
                     case 2:
                         Console.Write("Enter new title: ");
                         string newTitle = Console.ReadLine();
                         haettu.Title = newTitle;
-                        WriteToJson(topicKokoelma);
+                        WriteTopicsToJson(topicKokoelma);
                         break;
 
                     case 3:
                         Console.Write("Enter new description: ");
                         string newDescription = Console.ReadLine();
                         haettu.Description = newDescription;
-                        WriteToJson(topicKokoelma);
+                        WriteTopicsToJson(topicKokoelma);
                         break;
 
                     case 4:
                         Console.Write("New estimated time to master: ");
                         int newEstimatedTime = Topic.ReadInputInt();
                         haettu.EstimatedTimeToMaster = newEstimatedTime;
-                        WriteToJson(topicKokoelma);
+                        WriteTopicsToJson(topicKokoelma);
                         break;
 
                     case 5:
                         Console.Write("Enter new source: ");
                         string newSource = Console.ReadLine();
                         haettu.Source = newSource;
-                        WriteToJson(topicKokoelma);
+                        WriteTopicsToJson(topicKokoelma);
                         break;
 
                     case 6:
                         Console.WriteLine("Enter new start date for learning(e.g 01/01/2000):");
                         DateTime newStartDate = Topic.ReadDateTime();
                         haettu.StartLearningDate = newStartDate;
-                        WriteToJson(topicKokoelma);
+                        WriteTopicsToJson(topicKokoelma);
                         break;
 
                     case 7:
                         Console.WriteLine("Enter new finish date(01/01/2000): ");
                         DateTime newCompletitionDate = Topic.ReadDateTime();
                         haettu.CompletitionDate = newCompletitionDate;
-                        WriteToJson(topicKokoelma);
+                        WriteTopicsToJson(topicKokoelma);
                         break;
                     case 8:
 
@@ -313,7 +344,7 @@ namespace DiaryApp
                 string input = Console.ReadLine();
                 if (input.Equals("yes")) {
                     topicKokoelma.Remove(id);
-                    WriteToJson(topicKokoelma);
+                    WriteTopicsToJson(topicKokoelma);
                 }
                 else
                 { Console.WriteLine("Delete cancelled");
@@ -322,6 +353,7 @@ namespace DiaryApp
             }
 
             }
+        
         
 
     }
@@ -337,6 +369,8 @@ namespace DiaryApp
         public DateTime StartLearningDate { get; set; }
         public bool InProgress { get; set; }
         public DateTime CompletitionDate { get; set; }
+
+        public Task task;
        
 
         public Topic(int id, string title, string description, double estimatedTimeToMaster, double timeSpent,
@@ -421,6 +455,21 @@ namespace DiaryApp
             Deadline = taskDeadline;
             //Priority = taskPriority;
             Done = taskDone;
+        }
+
+        public Task ()
+        {
+
+        }
+
+        public override string ToString()
+        {
+            return "TaskId: " + TaskId +
+                "\n Tasks Title: " + Title +
+                "\n Description: " + Description +
+                "\n Notes: " + Notes +
+                "\n Deadline: " + Deadline.ToString("dd/MM/yyyy") +
+                "\n Done: " + Done;
         }
     }
 
