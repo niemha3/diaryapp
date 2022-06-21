@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Linq;
+using DiaryApp.Models;
 
 namespace DiaryApp
 {
@@ -124,10 +126,32 @@ namespace DiaryApp
             }
 
             Topic topic = new Topic(id, title, description, estimatedTimeToMaster, timeSpent, source, startLearningDate, inProgress, completitionDate);
+
             topicKokoelma.Add(id, topic);
 
+            using(DiaryAppContext yhteys = new DiaryAppContext())
+            {
+                Models.Topic uusiTopic = new Models.Topic()
+                {
+                
+                Title = title,
+                Description = description,
+                TimeToMaster = estimatedTimeToMaster,
+                TimeSpent = timeSpent,
+                Source = source,
+                StartLearningDate = startLearningDate,
+                InProgress = inProgress,
+                CompletitionDate = completitionDate
+                };
+
+                yhteys.Topics.Add(uusiTopic);
+                yhteys.SaveChanges();
+
+
+            }
+
             //Kirjoitus Json-tiedostoon
-            WriteTopicsToJson(topicKokoelma);
+            //WriteTopicsToJson(topicKokoelma);
         }
 
         static void ReadTopicsFromJson(Dictionary<int, Topic> topicKokoelma, List<Topic> topicLista)
@@ -164,10 +188,22 @@ namespace DiaryApp
         }
         static void ShowTopics(Dictionary<int, Topic> topicKokoelma)
         {
-            foreach (var item in topicKokoelma.Values)
+           using (DiaryAppContext yhteys = new DiaryAppContext())
             {
-                Console.WriteLine(item);
-                Console.WriteLine("----------------");
+                var topics = yhteys.Topics.Select(topikki => topikki);
+                foreach (var topic in topics)
+                {
+                    Console.WriteLine("Id: " + topic.Id);
+                    Console.WriteLine("Title: " + topic.Title);
+                    Console.WriteLine("Description: " + topic.Description);
+                    Console.WriteLine("Time to master: " + topic.TimeToMaster);
+                    Console.WriteLine("Time spent: " + topic.TimeSpent);
+                    Console.WriteLine("Source: " + topic.Source);
+                    Console.WriteLine("Start learning date: " + topic.StartLearningDate);
+                    Console.WriteLine("Completition date: " + topic.CompletitionDate);
+                    Console.WriteLine("In progress: " + topic.InProgress);
+                    Console.WriteLine("-------------------");
+                }
             }
 
         }
