@@ -14,11 +14,11 @@ namespace DiaryApp
         {
             Dictionary<int, Topic> topicKokoelma = new Dictionary<int, Topic>();
             List<Topic> topicLista = new List<Topic>();
-            ReadTopicsFromJson(topicKokoelma, topicLista);
+            
 
             Dictionary<int, Task> taskKokoelma = new Dictionary<int, Task>();
             List<Task> taskLista = new List<Task>();
-            ReadTasksFromJson(taskKokoelma, taskLista);
+       
 
             bool menu = true;
             while (menu)
@@ -32,7 +32,7 @@ namespace DiaryApp
                         break;
 
                     case 2:
-                        ShowTopics(topicKokoelma);
+                        ShowTopics();
                         break;
 
                     case 3:
@@ -84,8 +84,7 @@ namespace DiaryApp
 
         static void AddNewTopic( Dictionary<int, Topic> topicKokoelma)
         {
-            Console.WriteLine("Input id for the topic: ");
-            int id = Topic.ReadInputInt();
+          
 
             Console.Write("Input topic's title: ");
             string title = Topic.ReadInputString();
@@ -125,9 +124,9 @@ namespace DiaryApp
                 timeSpent = (completitionDate - startLearningDate).Days;
             }
 
-            Topic topic = new Topic(id, title, description, estimatedTimeToMaster, timeSpent, source, startLearningDate, inProgress, completitionDate);
+            Topic topic = new Topic(title, description, estimatedTimeToMaster, timeSpent, source, startLearningDate, inProgress, completitionDate);
 
-            topicKokoelma.Add(id, topic);
+            //topicKokoelma.Add(id, topic);
 
             using(DiaryAppContext yhteys = new DiaryAppContext())
             {
@@ -154,39 +153,39 @@ namespace DiaryApp
             //WriteTopicsToJson(topicKokoelma);
         }
 
-        static void ReadTopicsFromJson(Dictionary<int, Topic> topicKokoelma, List<Topic> topicLista)
-        {
-            string jsonTopics = File.ReadAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsontopics.json");
-            topicLista = JsonSerializer.Deserialize<List<Topic>>(jsonTopics);
-            foreach (var item in topicLista)
-            {
-                int id = item.Id;
-                topicKokoelma.Add(id, item);
-            }
-        }
-        static void WriteTopicsToJson(Dictionary<int, Topic> topicKokoelma)
-        {
+        //static void ReadTopicsFromJson(Dictionary<int, Topic> topicKokoelma, List<Topic> topicLista)
+        //{
+        //    string jsonTopics = File.ReadAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsontopics.json");
+        //    topicLista = JsonSerializer.Deserialize<List<Topic>>(jsonTopics);
+        //    foreach (var item in topicLista)
+        //    {
+        //        int id = item.Id;
+        //        topicKokoelma.Add(id, item);
+        //    }
+        //}
+        //static void WriteTopicsToJson(Dictionary<int, Topic> topicKokoelma)
+        //{
             
-            string jsonFile = JsonSerializer.Serialize(topicKokoelma.Values);
-            File.WriteAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsontopics.json", jsonFile);
-        }
-        static void WriteTasksToJson (Dictionary <int, Task> taskKokoelma)
-        {
-            string jsonTasks = JsonSerializer.Serialize(taskKokoelma.Values);
-            File.WriteAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsonTasks.json", jsonTasks);
+        //    string jsonFile = JsonSerializer.Serialize(topicKokoelma.Values);
+        //    File.WriteAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsontopics.json", jsonFile);
+        //}
+        //static void WriteTasksToJson (Dictionary <int, Task> taskKokoelma)
+        //{
+        //    string jsonTasks = JsonSerializer.Serialize(taskKokoelma.Values);
+        //    File.WriteAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsonTasks.json", jsonTasks);
            
-        }
-        static void ReadTasksFromJson (Dictionary <int, Task> taskKokoelma, List<Task> taskLista)
-        {
-            string jsonTasks = File.ReadAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsonTasks.json");
-            taskLista = JsonSerializer.Deserialize<List<Task>> (jsonTasks);
-            foreach (var task in taskLista)
-            {
-                int taskId = task.TaskId;
-                taskKokoelma.Add(taskId, task);
-            }
-        }
-        static void ShowTopics(Dictionary<int, Topic> topicKokoelma)
+        //}
+        //static void ReadTasksFromJson (Dictionary <int, Task> taskKokoelma, List<Task> taskLista)
+        //{
+        //    string jsonTasks = File.ReadAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsonTasks.json");
+        //    taskLista = JsonSerializer.Deserialize<List<Task>> (jsonTasks);
+        //    foreach (var task in taskLista)
+        //    {
+        //        int taskId = task.TaskId;
+        //        taskKokoelma.Add(taskId, task);
+        //    }
+        //}
+        static void ShowTopics()
         {
            using (DiaryAppContext yhteys = new DiaryAppContext())
             {
@@ -209,7 +208,7 @@ namespace DiaryApp
         }
         static void AddNewTask( Dictionary <int, Topic> topicKokoelma, Dictionary <int, Task> taskKokoelma)
         {
-            ShowTopics(topicKokoelma);
+            ShowTopics();
             List<string> taskNotes = new List<string>();
 
             Console.WriteLine("Enter topics Id where you want to add the task");
@@ -245,7 +244,7 @@ namespace DiaryApp
             
             taskKokoelma.Add(taskId, task);
 
-            WriteTasksToJson(taskKokoelma);
+            
 
             
         }
@@ -259,138 +258,163 @@ namespace DiaryApp
 
         static void searchTopics(Dictionary<int, Topic> topicKokoelma)
         {
-            Console.Write("Please input id for the topic you're searching: ");
-            int id = Convert.ToInt32(Console.ReadLine());
-            if (topicKokoelma.ContainsKey(id))
+            using(DiaryAppContext yhteys = new DiaryAppContext())
             {
-                Console.WriteLine("-----------------");
-                Console.WriteLine(topicKokoelma[id].ToString());
-            }
-            else
-            {
-                Console.WriteLine("No matches");
-                ShowMenu();
+                Console.WriteLine("Please input id for the topic you're searching: ");
+                int id = int.Parse(Console.ReadLine());
+                var topicToLookFor = yhteys.Topics.Where(topic => topic.Id == id).FirstOrDefault();
+                Console.WriteLine("Id: " + topicToLookFor.Id);
+                Console.WriteLine("Title: " + topicToLookFor.Title);
+                Console.WriteLine("Description: " + topicToLookFor.Description);
+                Console.WriteLine("Time to master: " + topicToLookFor.TimeToMaster);
+                Console.WriteLine("Time spent: " + topicToLookFor.TimeSpent);
+                Console.WriteLine("Source: " + topicToLookFor.Source);
+                Console.WriteLine("Start learning date: " + topicToLookFor.StartLearningDate);
+                Console.WriteLine("Completition date: " + topicToLookFor.CompletitionDate);
+                Console.WriteLine("In progress: " + topicToLookFor.InProgress);
+                Console.WriteLine("-------------------");
 
             }
+            //Console.Write("Please input id for the topic you're searching: ");
+            //int id = Convert.ToInt32(Console.ReadLine());
+            //if (topicKokoelma.ContainsKey(id))
+            //{
+            //    Console.WriteLine("-----------------");
+            //    Console.WriteLine(topicKokoelma[id].ToString());
+            //}
+            //else
+            //{
+            //    Console.WriteLine("No matches");
+            //    ShowMenu();
+
+            //}
         }
 
         static void UpdateTopic(Dictionary <int, Topic> topicKokoelma)
         {
-            ShowTopics(topicKokoelma);
+            ShowTopics();
             
             Console.WriteLine("Please input id for the topic you would like to edit: ");
             int id = int.Parse(Console.ReadLine());
-            if (topicKokoelma.ContainsKey(id) == true)
+            using (DiaryAppContext yhteys = new DiaryAppContext())
             {
-                
-                Console.WriteLine("1) Edit Id");
-                Console.WriteLine("2) Edit title");
-                Console.WriteLine("3) Edit Description");
-                Console.WriteLine("4) Edit Estimated time to master");
-                Console.WriteLine("5) Edit source");
-                Console.WriteLine("6) Edit start learning date: ");
-                Console.WriteLine("7) Edit completition date");
-                Console.WriteLine("8) Back to main menu");
+                var topicToEdit = yhteys.Topics.Where(topic => topic.Id == id).Single();
+                Console.WriteLine("1) Edit title");
+                Console.WriteLine("2) Edit Description");
+                Console.WriteLine("3) Edit Estimated time to master");
+                Console.WriteLine("4) Edit source");
+                Console.WriteLine("5) Edit start learning date: ");
+                Console.WriteLine("6) Edit completition date");
+                Console.WriteLine("7) Back to main menu");
                 Console.WriteLine("What do you want to edit?");
                 int input = Convert.ToInt32(Console.ReadLine());
 
-                Topic haettu = null;
-                topicKokoelma.TryGetValue(id, out haettu);
                 switch (input)
                 {
                     case 1:
-                        Console.Write("Enter new Id: ");
-                        int newId = Topic.ReadInputInt();
-                        haettu.Id = newId;
-                        WriteTopicsToJson(topicKokoelma);
+                        Console.Write("Enter new title: ");
+                        string newTitle = Console.ReadLine();
+                         topicToEdit.Title = newTitle;
+                         yhteys.SaveChanges();
                         break;
 
                     case 2:
-                        Console.Write("Enter new title: ");
-                        string newTitle = Console.ReadLine();
-                        haettu.Title = newTitle;
-                        WriteTopicsToJson(topicKokoelma);
+                        Console.Write("Enter new description: ");
+                        string newDescription = Console.ReadLine();
+                        topicToEdit.Description = newDescription;
+                        yhteys.SaveChanges();
                         break;
 
                     case 3:
-                        Console.Write("Enter new description: ");
-                        string newDescription = Console.ReadLine();
-                        haettu.Description = newDescription;
-                        WriteTopicsToJson(topicKokoelma);
+                        Console.Write("New estimated time to master: ");
+                        int newEstimatedTime = Topic.ReadInputInt();
+                        topicToEdit.TimeToMaster = newEstimatedTime;
+                        yhteys.SaveChanges();
                         break;
 
                     case 4:
-                        Console.Write("New estimated time to master: ");
-                        int newEstimatedTime = Topic.ReadInputInt();
-                        haettu.EstimatedTimeToMaster = newEstimatedTime;
-                        WriteTopicsToJson(topicKokoelma);
+                        Console.Write("Enter new source: ");
+                        string newSource = Console.ReadLine();
+                        topicToEdit.Source = newSource;
+                        yhteys.SaveChanges();
                         break;
 
                     case 5:
-                        Console.Write("Enter new source: ");
-                        string newSource = Console.ReadLine();
-                        haettu.Source = newSource;
-                        WriteTopicsToJson(topicKokoelma);
+                        Console.WriteLine("Enter new start date for learning(e.g 01/01/2000):");
+                        DateTime newStartDate = Topic.ReadDateTime();
+                        topicToEdit.StartLearningDate = newStartDate;
+                        yhteys.SaveChanges();
                         break;
 
                     case 6:
-                        Console.WriteLine("Enter new start date for learning(e.g 01/01/2000):");
-                        DateTime newStartDate = Topic.ReadDateTime();
-                        haettu.StartLearningDate = newStartDate;
-                        WriteTopicsToJson(topicKokoelma);
-                        break;
-
-                    case 7:
                         Console.WriteLine("Enter new finish date(01/01/2000): ");
                         DateTime newCompletitionDate = Topic.ReadDateTime();
-                        haettu.CompletitionDate = newCompletitionDate;
-                        WriteTopicsToJson(topicKokoelma);
-                        break;
-                    case 8:
-
+                        topicToEdit.CompletitionDate = newCompletitionDate;
+                        yhteys.SaveChanges();
                        
                         break;
 
+                    case 7:
+                        ShowMenu();
+                        break;
+                 
                     default:
                         break;
                 }
+                }
 
-            }
-            else
-            {
-                Console.WriteLine("Id was not found, back to main menu.");
-                ShowMenu();
-            }
+        
             
         }
 
         static void deleteTopic(Dictionary<int, Topic> topicKokoelma)
         {
-            foreach (var item in topicKokoelma)
-            {
-                Console.WriteLine(item.Value);
-                Console.WriteLine("-------------------------------");
-            }
-            Console.Write("Please input id for the topic you would like to delete: ");
+            ShowTopics();
+            Console.Write("Please input id for the topic you would like to delete:");
             int id = int.Parse(Console.ReadLine());
-            if (topicKokoelma.ContainsKey(id))
+
+            Console.WriteLine("Are you sure you want to delete this topic?(yes/no)");
+            string input = Console.ReadLine();
+            if(input.Equals("yes"))
             {
-                Console.WriteLine(topicKokoelma[id].ToString());
-                Console.WriteLine("Are you sure you want to delete this topic(yes/no): ");
-                string input = Console.ReadLine();
-                if (input.Equals("yes")) {
-                    topicKokoelma.Remove(id);
-                    WriteTopicsToJson(topicKokoelma);
-                }
-                else
-                { Console.WriteLine("Delete cancelled");
-                  Console.WriteLine("-------------------------------");
+                using(DiaryAppContext yhteys = new DiaryAppContext())
+                {
+                    var topicToDelete = yhteys.Topics.Where(topic => topic.Id == id).FirstOrDefault();
+                    yhteys.Topics.Remove(topicToDelete);
+                    yhteys.SaveChanges();
+
                 }
             }
 
-            }
-        
-        
+
+
+
+
+            //foreach (var item in topicKokoelma)
+            //{
+            //    Console.WriteLine(item.Value);
+            //    Console.WriteLine("-------------------------------");
+            //}
+            //Console.Write("Please input id for the topic you would like to delete: ");
+            //int id = int.Parse(Console.ReadLine());
+            //if (topicKokoelma.ContainsKey(id))
+            //{
+            //    Console.WriteLine(topicKokoelma[id].ToString());
+            //    Console.WriteLine("Are you sure you want to delete this topic(yes/no): ");
+            //    string input = Console.ReadLine();
+            //    if (input.Equals("yes")) {
+            //        topicKokoelma.Remove(id);
+            //        WriteTopicsToJson(topicKokoelma);
+            //    }
+            //    else
+            //    { Console.WriteLine("Delete cancelled");
+            //      Console.WriteLine("-------------------------------");
+            //    }
+            //}
+
+        }
+
+
 
     }
 
@@ -409,11 +433,11 @@ namespace DiaryApp
         public Task task;
        
 
-        public Topic(int id, string title, string description, double estimatedTimeToMaster, double timeSpent,
+        public Topic(string title, string description, double estimatedTimeToMaster, double timeSpent,
            string source, DateTime startLearningDate, bool inProgress, DateTime completitionDate)
         {
 
-            Id = id;
+            
             Title = title;
             Description = description;
             EstimatedTimeToMaster = estimatedTimeToMaster;
