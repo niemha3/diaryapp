@@ -209,7 +209,7 @@ namespace DiaryApp
         static void AddNewTask( Dictionary <int, Topic> topicKokoelma, Dictionary <int, Task> taskKokoelma)
         {
             ShowTopics();
-            List<string> taskNotes = new List<string>();
+            //List<string> taskNotes = new List<string>();
 
             Console.WriteLine("Enter topics Id where you want to add the task");
             int taskId = int.Parse(Console.ReadLine());
@@ -221,8 +221,8 @@ namespace DiaryApp
             string taskDescription = Topic.ReadInputString();
 
             Console.WriteLine("input notes: ");
-            string note = Topic.ReadInputString();
-            taskNotes.Add(note);
+            string taskNotes = Topic.ReadInputString();
+            //taskNotes.Add(note);
 
             Console.WriteLine("When is the task due(e.g 01/01/2000): ");
             DateTime taskDeadline = Topic.ReadDateTime();
@@ -241,10 +241,27 @@ namespace DiaryApp
                 taskDone = false;
             }
             Task task = new Task(taskId, taskTitle, taskDescription, taskNotes, taskDeadline, taskDone);
-            
-            taskKokoelma.Add(taskId, task);
+
+            using(DiaryAppContext yhteys = new DiaryAppContext())
+            {
+                Models.Task uusiTask = new Models.Task();
+                {
+                    uusiTask.TopicId = taskId;
+                    uusiTask.Title = taskTitle;
+                    uusiTask.Description = taskDescription;
+                    uusiTask.Notes = taskNotes;
+                    uusiTask.Deadline = taskDeadline;
+                    uusiTask.Done = taskDone;
+                    uusiTask.Urgency = urgency;
+
+                }
+
+                yhteys.Tasks.Add(uusiTask);
+                yhteys.SaveChanges();
+                
 
             
+            }
 
             
         }
@@ -501,12 +518,12 @@ namespace DiaryApp
         public int TaskId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public List<string> Notes { get; set; }
+        public string Notes { get; set; }
         public DateTime Deadline { get; set; }
         public Enum Priority { get; set; }
         public bool Done { get; set; }
 
-        public Task (int taskId, string taskTitle, string taskDescription, List<string> taskNotes, DateTime taskDeadline, bool taskDone)
+        public Task (int taskId, string taskTitle, string taskDescription, string taskNotes, DateTime taskDeadline, bool taskDone)
         {
             TaskId = taskId;
             Title = taskTitle;

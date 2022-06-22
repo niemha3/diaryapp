@@ -17,6 +17,7 @@ namespace DiaryApp.Models
         {
         }
 
+        public virtual DbSet<Task> Tasks { get; set; }
         public virtual DbSet<Topic> Topics { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -31,6 +32,34 @@ namespace DiaryApp.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Latin1_General_CI_AS");
+
+            modelBuilder.Entity<Task>(entity =>
+            {
+                entity.HasKey(e => e.TopicId);
+
+                entity.HasIndex(e => e.TopicId, "IX_Tasks");
+
+                entity.Property(e => e.TopicId).ValueGeneratedNever();
+
+                entity.Property(e => e.Deadline).HasColumnType("datetime");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Notes)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Title)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Urgency)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
 
             modelBuilder.Entity<Topic>(entity =>
             {
