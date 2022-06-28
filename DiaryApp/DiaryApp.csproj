@@ -13,4 +13,13 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ClassLibraryDates">
+      <HintPath>..\..\AwAcademy\Viikko4\ClassLibraryDates\ClassLibraryDates\obj\Debug\net5.0\ClassLibraryDates.dll</HintPath>
+    </Reference>
+    <Reference Include="ClassLibraryForDates">
+      <HintPath>..\..\AwAcademy\Viikko4\ClassLibraryForDates\ClassLibraryForDates\obj\Debug\netcoreapp3.1\ClassLibraryForDates.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

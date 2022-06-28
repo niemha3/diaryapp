@@ -16,5 +16,7 @@ namespace DiaryApp.Models
         public DateTime? StartLearningDate { get; set; }
         public DateTime? CompletitionDate { get; set; }
         public bool? InProgress { get; set; }
+        public bool? StudiesOnTime { get; set; }
+        public bool? DateInFuture { get; set; }
     }
 }

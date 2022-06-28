@@ -5,13 +5,17 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Linq;
 using DiaryApp.Models;
-
+using ClassLibraryForDates;
 namespace DiaryApp
 {
     class Program
     {
         static void Main(string[] args)
         {
+            
+            
+               
+           
             Dictionary<int, Topic> topicKokoelma = new Dictionary<int, Topic>();
             List<Topic> topicLista = new List<Topic>();
             
@@ -113,16 +117,30 @@ namespace DiaryApp
                 inProgress = true;
             }
 
+            bool dateInFuture = Class1.FuturePast(startLearningDate);
             double timeSpent;
-            if(inProgress)
+            if(dateInFuture == true)
             {
-                timeSpent = (startLearningDate - DateTime.Today).Days;
+                timeSpent = 0;
+                    
+            }
+
+            else if (dateInFuture == false && inProgress == true)
+            {
+                timeSpent = (DateTime.Today - startLearningDate).Days;
             }
 
             else
             {
                 timeSpent = (completitionDate - startLearningDate).Days;
             }
+
+         
+
+          
+            bool studiesOnTime = Class1.studiesOnTimeOrNot(startLearningDate, completitionDate, estimatedTimeToMaster);
+          
+
 
             Topic topic = new Topic(title, description, estimatedTimeToMaster, timeSpent, source, startLearningDate, inProgress, completitionDate);
 
@@ -132,15 +150,18 @@ namespace DiaryApp
             {
                 Models.Topic uusiTopic = new Models.Topic()
                 {
-                
-                Title = title,
-                Description = description,
-                TimeToMaster = estimatedTimeToMaster,
-                TimeSpent = timeSpent,
-                Source = source,
-                StartLearningDate = startLearningDate,
-                InProgress = inProgress,
-                CompletitionDate = completitionDate
+
+                    Title = title,
+                    Description = description,
+                    TimeToMaster = estimatedTimeToMaster,
+                    TimeSpent = timeSpent,
+                    Source = source,
+                    StartLearningDate = startLearningDate,
+                    InProgress = inProgress,
+                    CompletitionDate = completitionDate,
+                    StudiesOnTime = studiesOnTime,
+                    DateInFuture = dateInFuture
+
                 };
 
                 yhteys.Topics.Add(uusiTopic);
@@ -185,6 +206,8 @@ namespace DiaryApp
         //        taskKokoelma.Add(taskId, task);
         //    }
         //}
+
+        
         static void ShowTopics()
         {
            using (DiaryAppContext yhteys = new DiaryAppContext())
@@ -201,7 +224,10 @@ namespace DiaryApp
                     Console.WriteLine("Start learning date: " + topic.StartLearningDate);
                     Console.WriteLine("Completition date: " + topic.CompletitionDate);
                     Console.WriteLine("In progress: " + topic.InProgress);
+                    Console.WriteLine("Studies on time: " + topic.StudiesOnTime);
+                    
                     Console.WriteLine("-------------------");
+
                 }
             }
 
