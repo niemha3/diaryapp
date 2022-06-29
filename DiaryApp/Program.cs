@@ -117,11 +117,36 @@ namespace DiaryApp
 
             }
 
-            Console.Write("Estimated time in days to learn the topic: ");
-            double estimatedTimeToMaster = Topic.ReadDoubleInput();
+            double estimatedTimeToMaster = 0;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Estimated time in days to learn the topic: ");
+                    estimatedTimeToMaster = Topic.ReadDoubleInput();
 
-            Console.Write("What was your source website or book name: ");
-            string source = Topic.ReadInputString();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Please input a number in correct form.");
+                    continue;
+                }
+                break;
+
+            }
+
+            string source = "";
+            while (true)
+            {
+                Console.Write("What was your source website or book name: ");
+                source = Topic.ReadInputString();
+                if(source.Length > 255)
+                {
+                    Console.WriteLine("Maxixum length is 255 characters, please try again.");
+                    continue;
+                }
+                break;
+            }
 
             Console.Write("Input your starting date (e.g 11/06/1993): ");
             DateTime startLearningDate = Topic.ReadDateTime();
