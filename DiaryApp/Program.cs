@@ -88,13 +88,34 @@ namespace DiaryApp
 
         static void AddNewTopic( Dictionary<int, Topic> topicKokoelma)
         {
-          
 
-            Console.Write("Input topic's title: ");
-            string title = Topic.ReadInputString();
+            string title = "";
+            while (true)
+            {
+                Console.Write("Input topic's title: ");
+                title = Console.ReadLine();
+                if(title.Length > 255)
+                {
+                   Console.WriteLine("Maxixum length is 255 characters, please try again.");
+                   continue;
+                }
+                    break;
+             }
+            
 
-            Console.Write("Input description for topic: ");
-            string description = Topic.ReadInputString();
+            string description = "";
+            while(true)
+            {
+                Console.Write("Input description for topic: ");
+                    description = Console.ReadLine();
+                    if(description.Length > 255)
+                    {
+                        Console.WriteLine("Maxixum length is 255 characters, please try again.");
+                        continue;
+                    }
+                    break;
+
+            }
 
             Console.Write("Estimated time in days to learn the topic: ");
             double estimatedTimeToMaster = Topic.ReadDoubleInput();
