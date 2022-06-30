@@ -86,10 +86,10 @@ namespace DiaryApp
             return input;
         }
 
-        static void AddNewTopic( Dictionary<int, Topic> topicKokoelma)
+        static  void AddNewTopic( Dictionary<int, Topic> topicKokoelma)
         {
 
-            string title = "";
+            string title;
             while (true)
             {
                 Console.Write("Input topic's title: ");
@@ -101,9 +101,9 @@ namespace DiaryApp
                 }
                     break;
              }
-            
 
-            string description = "";
+
+            string description;
             while(true)
             {
                 Console.Write("Input description for topic: ");
@@ -117,7 +117,7 @@ namespace DiaryApp
 
             }
 
-            double estimatedTimeToMaster = 0;
+            double estimatedTimeToMaster;
             while (true)
             {
                 try
@@ -126,7 +126,7 @@ namespace DiaryApp
                     estimatedTimeToMaster = Topic.ReadDoubleInput();
 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Console.WriteLine("Please input a number in correct form.");
                     continue;
@@ -135,7 +135,7 @@ namespace DiaryApp
 
             }
 
-            string source = "";
+            string source;
             while (true)
             {
                 Console.Write("What was your source website or book name: ");
@@ -148,11 +148,42 @@ namespace DiaryApp
                 break;
             }
 
-            Console.Write("Input your starting date (e.g 11/06/1993): ");
-            DateTime startLearningDate = Topic.ReadDateTime();
 
-            Console.Write("Please input topics completition date (e.g 11/06/1993): ");
-            DateTime completitionDate = Topic.ReadDateTime();
+            DateTime startLearningDate;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Input your starting date (e.g 11/06/1993): ");
+                    startLearningDate = Topic.ReadDateTime();
+
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Please enter the date in right format (e.g 11/06/1993)");
+                    continue;
+                }
+                break;
+            }
+
+            DateTime completitionDate;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Please input topics completition date (e.g 11/06/1993): ");
+                    completitionDate = Topic.ReadDateTime();
+
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Please enter the date in right format (e.g 11/06/1993)");
+                    continue;
+                }
+                break;
+            }
+
+
             bool inProgress;
             if (completitionDate < DateTime.Today)
             {
@@ -168,7 +199,6 @@ namespace DiaryApp
             if(dateInFuture == true)
             {
                 timeSpent = 0;
-                    
             }
 
             else if (dateInFuture == false && inProgress == true)
