@@ -10,7 +10,7 @@ namespace DiaryApp
 {
     class Program
     {
-        static void Main(string[] args)
+        static async System.Threading.Tasks.Task Main(string[] args)
         {
             
             
@@ -32,6 +32,7 @@ namespace DiaryApp
                 switch (userInput)
                 {
                     case 1:
+
                         AddNewTopic(topicKokoelma);
                         break;
 
@@ -86,7 +87,7 @@ namespace DiaryApp
             return input;
         }
 
-        static  void AddNewTopic( Dictionary<int, Topic> topicKokoelma)
+        static async System.Threading.Tasks.Task AddNewTopic( Dictionary<int, Topic> topicKokoelma)
         {
 
             string title;
@@ -240,8 +241,8 @@ namespace DiaryApp
 
                 };
 
-                yhteys.Topics.Add(uusiTopic);
-                yhteys.SaveChanges();
+               yhteys.Topics.Add(uusiTopic);
+                await yhteys.SaveChangesAsync();
 
 
             }
@@ -308,7 +309,7 @@ namespace DiaryApp
             }
 
         }
-        static void AddNewTask( Dictionary <int, Topic> topicKokoelma, Dictionary <int, Task> taskKokoelma)
+        static async System.Threading.Tasks.Task AddNewTask( Dictionary <int, Topic> topicKokoelma, Dictionary <int, Task> taskKokoelma)
         {
             ShowTopics();
             //List<string> taskNotes = new List<string>();
@@ -359,7 +360,7 @@ namespace DiaryApp
                 }
 
                 yhteys.Tasks.Add(uusiTask);
-                yhteys.SaveChanges();
+               await yhteys.SaveChangesAsync();
                 
 
             
@@ -409,7 +410,7 @@ namespace DiaryApp
             //}
         }
 
-        static void UpdateTopic(Dictionary <int, Topic> topicKokoelma)
+        static async System.Threading.Tasks.Task UpdateTopic(Dictionary <int, Topic> topicKokoelma)
         {
             ShowTopics();
             
@@ -434,42 +435,42 @@ namespace DiaryApp
                         Console.Write("Enter new title: ");
                         string newTitle = Console.ReadLine();
                          topicToEdit.Title = newTitle;
-                         yhteys.SaveChanges();
+                        await yhteys.SaveChangesAsync();
                         break;
 
                     case 2:
                         Console.Write("Enter new description: ");
                         string newDescription = Console.ReadLine();
                         topicToEdit.Description = newDescription;
-                        yhteys.SaveChanges();
+                        await yhteys.SaveChangesAsync();
                         break;
 
                     case 3:
                         Console.Write("New estimated time to master: ");
                         int newEstimatedTime = Topic.ReadInputInt();
                         topicToEdit.TimeToMaster = newEstimatedTime;
-                        yhteys.SaveChanges();
+                       await yhteys.SaveChangesAsync();
                         break;
 
                     case 4:
                         Console.Write("Enter new source: ");
                         string newSource = Console.ReadLine();
                         topicToEdit.Source = newSource;
-                        yhteys.SaveChanges();
+                        await yhteys.SaveChangesAsync();
                         break;
 
                     case 5:
                         Console.WriteLine("Enter new start date for learning(e.g 01/01/2000):");
                         DateTime newStartDate = Topic.ReadDateTime();
                         topicToEdit.StartLearningDate = newStartDate;
-                        yhteys.SaveChanges();
+                        await yhteys.SaveChangesAsync();
                         break;
 
                     case 6:
                         Console.WriteLine("Enter new finish date(01/01/2000): ");
                         DateTime newCompletitionDate = Topic.ReadDateTime();
                         topicToEdit.CompletitionDate = newCompletitionDate;
-                        yhteys.SaveChanges();
+                        await yhteys.SaveChangesAsync();
                        
                         break;
 
@@ -486,7 +487,7 @@ namespace DiaryApp
             
         }
 
-        static void deleteTopic(Dictionary<int, Topic> topicKokoelma)
+        static async System.Threading.Tasks.Task deleteTopic(Dictionary<int, Topic> topicKokoelma)
         {
             ShowTopics();
             Console.Write("Please input id for the topic you would like to delete:");
@@ -500,7 +501,7 @@ namespace DiaryApp
                 {
                     var topicToDelete = yhteys.Topics.Where(topic => topic.Id == id).FirstOrDefault();
                     yhteys.Topics.Remove(topicToDelete);
-                    yhteys.SaveChanges();
+                   await yhteys.SaveChangesAsync();
 
                 }
             }
