@@ -28,7 +28,7 @@ namespace DiaryApp
                         break;
 
                     case 3:
-                        searchTopics();
+                        SearchTopics();
                         break;
 
                     case 4:
@@ -70,7 +70,7 @@ namespace DiaryApp
 
             Console.Write("Input number to choose what to do:");
             int input = int.Parse(Console.ReadLine());
-            Console.WriteLine("----------------");
+            Console.WriteLine("--------------------------------------");
             return input;
         }
 
@@ -252,7 +252,7 @@ namespace DiaryApp
                     Console.WriteLine("In progress: " + topic.InProgress);
                     Console.WriteLine("Studies on time: " + topic.StudiesOnTime);
                     
-                    Console.WriteLine("-------------------");
+                    Console.WriteLine("-------------------------------------");
 
                 }
             }
@@ -261,7 +261,7 @@ namespace DiaryApp
         static async System.Threading.Tasks.Task AddNewTask()
         {
             ShowTopics();
-            //List<string> taskNotes = new List<string>();
+            
 
             Console.WriteLine("Enter topics Id where you want to add the task");
             int taskId = int.Parse(Console.ReadLine());
@@ -274,7 +274,7 @@ namespace DiaryApp
 
             Console.WriteLine("input notes: ");
             string taskNotes = Topic.ReadInputString();
-            //taskNotes.Add(note);
+           
 
             Console.WriteLine("When is the task due(e.g 01/01/2000): ");
             DateTime taskDeadline = Topic.ReadDateTime();
@@ -319,13 +319,25 @@ namespace DiaryApp
         }
         static void ShowTasks ()
         {
-            foreach (var task in taskKokoelma.Values)
+          using (DiaryAppContext yhteys = new DiaryAppContext())
             {
-                Console.WriteLine(task);
+                var tasks = yhteys.Tasks.Select(taski => taski);
+                foreach (var task in tasks)
+                {
+                    Console.WriteLine("Id: " + task.TopicId);
+                    Console.WriteLine("Title: " + task.Title);
+                    Console.WriteLine("Description: " + task.Description);
+                    Console.WriteLine("Notes: " + task.Notes);
+                    Console.WriteLine("Deadline: " + task.Deadline);
+                    Console.WriteLine("Urgency: " + task.Urgency);
+                    Console.WriteLine("Done: " + task.Done);
+
+                    Console.WriteLine("----------------------------------------");
+                }
             }
         }
 
-        static void searchTopics()
+        static void SearchTopics()
         {
             using(DiaryAppContext yhteys = new DiaryAppContext())
             {
