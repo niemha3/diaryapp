@@ -10,17 +10,6 @@ namespace DiaryApp
     {
         static async System.Threading.Tasks.Task Main(string[] args)
         {
-            
-            
-               
-           
-            Dictionary<int, Topic> topicKokoelma = new Dictionary<int, Topic>();
-            List<Topic> topicLista = new List<Topic>();
-            
-
-            Dictionary<int, Task> taskKokoelma = new Dictionary<int, Task>();
-            List<Task> taskLista = new List<Task>();
-       
 
             bool menu = true;
             while (menu)
@@ -31,7 +20,7 @@ namespace DiaryApp
                 {
                     case 1:
 
-                        AddNewTopic(topicKokoelma);
+                        AddNewTopic();
                         break;
 
                     case 2:
@@ -39,24 +28,24 @@ namespace DiaryApp
                         break;
 
                     case 3:
-                        searchTopics(topicKokoelma);
+                        searchTopics();
                         break;
 
                     case 4:
-                        UpdateTopic(topicKokoelma);
+                        UpdateTopic();
                         break;
 
                     case 5:
-                        deleteTopic(topicKokoelma);
+                        DeleteTopic();
                         break;
 
                     case 6:
                         //AddNewTask ei vielä konkreettisesti lisää taskia niinkuin pitäisi
                         // On vielä vaiheessa
-                        AddNewTask(topicKokoelma,taskKokoelma);
+                        AddNewTask();
                         break;
                     case 7:
-                        ShowTasks(taskKokoelma);
+                        ShowTasks();
                         break;
                     case 8:
                         menu = false;
@@ -85,7 +74,7 @@ namespace DiaryApp
             return input;
         }
 
-        static async System.Threading.Tasks.Task AddNewTopic( Dictionary<int, Topic> topicKokoelma)
+        static async System.Threading.Tasks.Task AddNewTopic()
         {
 
             string title;
@@ -240,15 +229,10 @@ namespace DiaryApp
                 };
 
                yhteys.Topics.Add(uusiTopic);
-                await yhteys.SaveChangesAsync();
-
-
+               await yhteys.SaveChangesAsync();
             }
 
         }
-
-
-
 
         static void ShowTopics()
         {
@@ -274,7 +258,7 @@ namespace DiaryApp
             }
 
         }
-        static async System.Threading.Tasks.Task AddNewTask( Dictionary <int, Topic> topicKokoelma, Dictionary <int, Task> taskKokoelma)
+        static async System.Threading.Tasks.Task AddNewTask()
         {
             ShowTopics();
             //List<string> taskNotes = new List<string>();
@@ -333,7 +317,7 @@ namespace DiaryApp
 
             
         }
-        static void ShowTasks (Dictionary <int, Task> taskKokoelma)
+        static void ShowTasks ()
         {
             foreach (var task in taskKokoelma.Values)
             {
@@ -341,7 +325,7 @@ namespace DiaryApp
             }
         }
 
-        static void searchTopics(Dictionary<int, Topic> topicKokoelma)
+        static void searchTopics()
         {
             using(DiaryAppContext yhteys = new DiaryAppContext())
             {
@@ -363,7 +347,7 @@ namespace DiaryApp
    
         }
 
-        static async System.Threading.Tasks.Task UpdateTopic(Dictionary <int, Topic> topicKokoelma)
+        static async System.Threading.Tasks.Task UpdateTopic()
         {
             ShowTopics();
             
@@ -440,7 +424,7 @@ namespace DiaryApp
             
         }
 
-        static async System.Threading.Tasks.Task deleteTopic(Dictionary<int, Topic> topicKokoelma)
+        static async System.Threading.Tasks.Task DeleteTopic()
         {
             ShowTopics();
             Console.Write("Please input id for the topic you would like to delete:");
