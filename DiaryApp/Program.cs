@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Linq;
 using DiaryApp.Models;
 using ClassLibraryForDates;
@@ -221,7 +219,7 @@ namespace DiaryApp
 
             Topic topic = new Topic(title, description, estimatedTimeToMaster, timeSpent, source, startLearningDate, inProgress, completitionDate);
 
-            //topicKokoelma.Add(id, topic);
+            
 
             using(DiaryAppContext yhteys = new DiaryAppContext())
             {
@@ -247,44 +245,11 @@ namespace DiaryApp
 
             }
 
-            //Kirjoitus Json-tiedostoon
-            //WriteTopicsToJson(topicKokoelma);
         }
 
-        //static void ReadTopicsFromJson(Dictionary<int, Topic> topicKokoelma, List<Topic> topicLista)
-        //{
-        //    string jsonTopics = File.ReadAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsontopics.json");
-        //    topicLista = JsonSerializer.Deserialize<List<Topic>>(jsonTopics);
-        //    foreach (var item in topicLista)
-        //    {
-        //        int id = item.Id;
-        //        topicKokoelma.Add(id, item);
-        //    }
-        //}
-        //static void WriteTopicsToJson(Dictionary<int, Topic> topicKokoelma)
-        //{
-            
-        //    string jsonFile = JsonSerializer.Serialize(topicKokoelma.Values);
-        //    File.WriteAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsontopics.json", jsonFile);
-        //}
-        //static void WriteTasksToJson (Dictionary <int, Task> taskKokoelma)
-        //{
-        //    string jsonTasks = JsonSerializer.Serialize(taskKokoelma.Values);
-        //    File.WriteAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsonTasks.json", jsonTasks);
-           
-        //}
-        //static void ReadTasksFromJson (Dictionary <int, Task> taskKokoelma, List<Task> taskLista)
-        //{
-        //    string jsonTasks = File.ReadAllText(@"C:\Users\Harri\source\repos\DiaryApp\jsonTasks.json");
-        //    taskLista = JsonSerializer.Deserialize<List<Task>> (jsonTasks);
-        //    foreach (var task in taskLista)
-        //    {
-        //        int taskId = task.TaskId;
-        //        taskKokoelma.Add(taskId, task);
-        //    }
-        //}
 
-        
+
+
         static void ShowTopics()
         {
            using (DiaryAppContext yhteys = new DiaryAppContext())
@@ -395,19 +360,7 @@ namespace DiaryApp
                 Console.WriteLine("-------------------");
 
             }
-            //Console.Write("Please input id for the topic you're searching: ");
-            //int id = Convert.ToInt32(Console.ReadLine());
-            //if (topicKokoelma.ContainsKey(id))
-            //{
-            //    Console.WriteLine("-----------------");
-            //    Console.WriteLine(topicKokoelma[id].ToString());
-            //}
-            //else
-            //{
-            //    Console.WriteLine("No matches");
-            //    ShowMenu();
-
-            //}
+   
         }
 
         static async System.Threading.Tasks.Task UpdateTopic(Dictionary <int, Topic> topicKokoelma)
@@ -503,154 +456,15 @@ namespace DiaryApp
                     yhteys.Topics.Remove(topicToDelete);
                    await yhteys.SaveChangesAsync();
 
+                   
                 }
             }
 
 
-
-
-
-            //foreach (var item in topicKokoelma)
-            //{
-            //    Console.WriteLine(item.Value);
-            //    Console.WriteLine("-------------------------------");
-            //}
-            //Console.Write("Please input id for the topic you would like to delete: ");
-            //int id = int.Parse(Console.ReadLine());
-            //if (topicKokoelma.ContainsKey(id))
-            //{
-            //    Console.WriteLine(topicKokoelma[id].ToString());
-            //    Console.WriteLine("Are you sure you want to delete this topic(yes/no): ");
-            //    string input = Console.ReadLine();
-            //    if (input.Equals("yes")) {
-            //        topicKokoelma.Remove(id);
-            //        WriteTopicsToJson(topicKokoelma);
-            //    }
-            //    else
-            //    { Console.WriteLine("Delete cancelled");
-            //      Console.WriteLine("-------------------------------");
-            //    }
-            //}
-
         }
 
 
 
-    }
-
-    public class Topic
-    {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public double EstimatedTimeToMaster { get; set; }
-        public double TimeSpent { get; set; }
-        public string Source { get; set; }
-        public DateTime StartLearningDate { get; set; }
-        public bool InProgress { get; set; }
-        public DateTime CompletitionDate { get; set; }
-
-        public Task task;
-       
-
-        public Topic(string title, string description, double estimatedTimeToMaster, double timeSpent,
-           string source, DateTime startLearningDate, bool inProgress, DateTime completitionDate)
-        {
-
-            
-            Title = title;
-            Description = description;
-            EstimatedTimeToMaster = estimatedTimeToMaster;
-            TimeSpent = timeSpent;
-            Source = source;
-            StartLearningDate = startLearningDate;
-            InProgress = inProgress;
-            CompletitionDate = completitionDate;
-
-
-
-        }
-
-        public Topic()
-        {
-
-        }
-        public static string ReadInputString()
-        {
-            string input = Console.ReadLine();
-            return input;
-        }
-
-        public static int ReadInputInt()
-        {
-            int input = Convert.ToInt32(Console.ReadLine());
-            return input;
-        }
-
-        public static double ReadDoubleInput()
-        {
-            double input = Convert.ToDouble(Console.ReadLine());
-            return input;
-        }
-
-        public static DateTime ReadDateTime()
-        {
-            string inputDate = Console.ReadLine();
-            DateTime completitionDate = DateTime.Parse(inputDate);
-            return completitionDate;
-        }
-
-      
-        public override string ToString()
-        {
-            return "Topic Id:" + Id.ToString() +
-                "\nTopic title: " + Title.ToString() +
-                "\n topic description: " + Description.ToString() +
-                "\n Estimated time to master: " + EstimatedTimeToMaster.ToString() + " days" +
-                "\n Time spent: " + TimeSpent.ToString() + " days" +
-                "\n Source: " + Source.ToString() +
-                "\n Start learning date:  " + StartLearningDate.ToString("dd/MM/yyyy") +
-                "\n still in progress: " + InProgress.ToString() +
-                "\n Completition date: " + CompletitionDate.ToString("dd/MM/yyyy");
-        }
-    }
-
-
-    public class Task
-    {
-        public int TaskId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Notes { get; set; }
-        public DateTime Deadline { get; set; }
-        public Enum Priority { get; set; }
-        public bool Done { get; set; }
-
-        public Task (int taskId, string taskTitle, string taskDescription, string taskNotes, DateTime taskDeadline, bool taskDone)
-        {
-            TaskId = taskId;
-            Title = taskTitle;
-            Description = taskDescription;
-            Notes = taskNotes;
-            Deadline = taskDeadline;
-            //Priority = taskPriority;
-            Done = taskDone;
-        }
-
-        public Task ()
-        {
-
-        }
-
-        public override string ToString()
-        {
-            return "TaskId: " + TaskId +
-                "\n Tasks Title: " + Title +
-                "\n Description: " + Description +
-                "\n Notes: " + Notes +
-                "\n Deadline: " + Deadline.ToString("dd/MM/yyyy") +
-                "\n Done: " + Done;
-        }
     }
 
 
